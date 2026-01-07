@@ -69,14 +69,17 @@ export function ExcalidrawWrapper({ fileId }: ExcalidrawWrapperProps) {
   };
 
   const saveData = async () => {
+    console.log("[Wrapper] Attempting save...");
     // If nothing changed effectively, just mark clean and return (unless it was a forced manual save, but logic holds)
     if (currentContentRef.current === lastSavedRef.current) {
+        console.log("[Wrapper] No changes detected, skipping save.");
         markClean(fileId);
         return;
     }
 
     setSaving(true);
     try {
+        console.log(`[Wrapper] Sending save request for ${fileId}`);
         const res = await fetch(`/api/files/${fileId}/content`, {
             method: "POST",
             body: currentContentRef.current
@@ -89,7 +92,8 @@ export function ExcalidrawWrapper({ fileId }: ExcalidrawWrapperProps) {
             }
             throw new Error(`Save failed with status ${res.status}`);
         }
-
+        
+        console.log("[Wrapper] Save successful");
         lastSavedRef.current = currentContentRef.current;
         markClean(fileId);
     } catch (e) {
@@ -104,7 +108,7 @@ export function ExcalidrawWrapper({ fileId }: ExcalidrawWrapperProps) {
   const handleChange = useCallback((elements: any, appState: any, files: any) => {
     if (loading) return;
     
-    // Full state for saving
+    // Full state for saving (keep everything)
     const { collaborators, ...cleanAppState } = appState;
     const payload = {
         elements,
@@ -114,35 +118,32 @@ export function ExcalidrawWrapper({ fileId }: ExcalidrawWrapperProps) {
     const content = JSON.stringify(payload);
     currentContentRef.current = content;
 
-    // Comparison state for dirty check (ignore scroll/zoom)
-    const { 
-        scrollX, scrollY, zoom, 
-        selectionElement, selectedElementIds, 
-        width, height, offsetLeft, offsetTop,
-        ...comparisonAppState 
-    } = cleanAppState;
+    // Comparison state for dirty check (STRICT SUBSET)
+    // Only track things that actually matter for the document content
+    const comparisonAppState = {
+        viewBackgroundColor: cleanAppState.viewBackgroundColor,
+        gridModeEnabled: cleanAppState.gridModeEnabled,
+        theme: cleanAppState.theme,
+    };
 
+    // Robust element comparison (strip unnecessary runtime props if needed, but usually elements are fine)
+    // We strictly compare elements, files, and specific appState props.
     const comparisonPayload = {
         elements,
         appState: comparisonAppState,
         files
     };
     const comparisonContent = JSON.stringify(comparisonPayload);
-
-    // We need to compare against the *last saved comparison content*
-    // But lastSavedRef stores the FULL content. We need to parse and strip it to compare, 
-    // OR we track a separate lastSavedComparisonRef.
-    // Parsing is safer to ensure we compare apples to apples.
     
     try {
         const lastSavedFull = JSON.parse(lastSavedRef.current || "{}");
+        // Reconstruct reference comparison object from last saved
         const lastSavedAppState = lastSavedFull.appState || {};
-        const { 
-            scrollX: lSX, scrollY: lSY, zoom: lZ,
-            selectionElement: lSE, selectedElementIds: lSEI,
-            width: lW, height: lH, offsetLeft: lOL, offsetTop: lOT, 
-            ...lastSavedComparisonAppState 
-        } = lastSavedAppState;
+        const lastSavedComparisonAppState = {
+             viewBackgroundColor: lastSavedAppState.viewBackgroundColor,
+             gridModeEnabled: lastSavedAppState.gridModeEnabled,
+             theme: lastSavedAppState.theme,
+        };
 
         const lastSavedComparisonPayload = {
             elements: lastSavedFull.elements,

@@ -46,6 +46,7 @@ export async function POST(req: Request) {
 
     let parentPath = "";
     if (parentId) {
+      console.log(`[API] POST /files - Creating item '${name}' in parent '${parentId}' for user: ${session.user.id}`);
       const parent = await prisma.fileSystemItem.findUnique({
         where: { id: parentId }
       });
@@ -53,6 +54,8 @@ export async function POST(req: Request) {
         return NextResponse.json({ message: "Invalid parent" }, { status: 400 });
       }
       parentPath = parent.path === "/" ? "" : parent.path;
+    } else {
+      console.log(`[API] POST /files - Creating item '${name}' in root for user: ${session.user.id}`);
     }
 
     const itemName = name.endsWith(".excalidraw") || type === "FOLDER" ? name : `${name}.excalidraw`;

@@ -1,36 +1,90 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Exc Server
 
-## Getting Started
+A self-hosted, cloud-enabled backend for Excalidraw, built with Next.js, Prisma, and Tailwind CSS.
 
-First, run the development server:
+## 💡 Motivation
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+I've always loved using [Excalidraw](https://excalidraw.com/) for its simplicity and hand-drawn aesthetic. However, I often found myself in a dilemma: efficient cloud synchronization requires a paid subscription (Excalidraw+), while saving files locally feels cumbersome and makes switching devices difficult.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+**Exc Server** was born to solve this. It provides a seamless, self-hosted solution to manage your drawings in the cloud (using S3-compatible storage or your own server) without the recurring costs.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## ✨ Features
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Cloud Storage**: Store your files safely in the cloud (AWS S3, Aliyun OSS, MinIO) or locally.
+- **File Management**: Organize your drawings with folders, rename, delete, and drag-and-drop support.
+- **Modern UI**: A polished, responsive interface built with Tailwind CSS and Framer Motion.
+- **Authentication**: Secure user accounts via NextAuth.js.
+- **Postgres Database**: Robust metadata management using Prisma and PostgreSQL.
 
-## Learn More
+## 🚀 Deployment
 
-To learn more about Next.js, take a look at the following resources:
+### Option 1: Docker (Recommended)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The easiest way to get started is using Docker Compose. This bundles the application, PostgreSQL database, and Caddy reverse proxy.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/Yiheng-Liu/exc-server.git
+   cd exc-server
+   ```
 
-## Deploy on Vercel
+2. **Configure Environment:**
+   Open `docker-compose.yml` and configure your environment variables (Database URL is pre-configured for the internal DB).
+   
+   If you want to use S3 storage:
+   ```yaml
+   - STORAGE_PROVIDER=s3
+   - AWS_ACCESS_KEY_ID=your_key
+   - AWS_SECRET_ACCESS_KEY=your_secret
+   - AWS_S3_REGION=us-east-1
+   - AWS_S3_ENDPOINT=https://oss-cn-hangzhou.aliyuncs.com # Optional for standard AWS
+   - AWS_S3_BUCKET=your_bucket
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+3. **Run Services:**
+   ```bash
+   docker-compose up -d
+   ```
+   **Access:** Open [http://localhost](http://localhost) in your browser.
+   
+   > **Note:** The application uses **Caddy** as a reverse proxy (defined in `docker-compose.yml`). The access port and proxy rules are configured in the `Caddyfile`. By default, it listens on port `80`.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Option 2: Local Development
+
+1. **Install Dependencies:**
+   ```bash
+   pnpm install
+   ```
+
+2. **Setup Database:**
+   Ensure you have a PostgreSQL database running.
+   ```bash
+   # Copy example env
+   cp .env_example .env
+   # Update .env with your DATABASE_URL
+   
+   # Push schema to DB
+   npx prisma db push
+   ```
+
+3. **Run Development Server:**
+   ```bash
+   pnpm dev
+   ```
+   Access the app at `http://localhost:3000`.
+
+## 🗺️ Roadmap & Todo
+
+- [ ] **Team Collaboration**: Real-time collaboration (WebSocket/P2P) for teams.
+- [ ] **Sharing**: Public links for read-only access to drawings.
+- [ ] **Versioning**: History and version control for files.
+- [ ] **Bug Fixes**: Continuous improvement and stability enhancements.
+- [ ] **Plugins**: Support for custom Excalidraw scripts/plugins.
+
+## 🤝 Contributing
+
+Contributions are welcome! Feel free to open issues or submit pull requests.
+
+## 📄 License
+
+MIT

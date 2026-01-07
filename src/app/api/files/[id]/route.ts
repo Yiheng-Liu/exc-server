@@ -15,6 +15,7 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
 
   try {
     const { id } = await params;
+    console.log(`[API] DELETE /files/${id} - User: ${session.user.id}`);
     
     // Check ownership
     const item = await prisma.fileSystemItem.findUnique({
@@ -55,6 +56,8 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
   try {
     const { id } = await params;
     const { name, parentId } = await req.json();
+
+    console.log(`[API] PUT /files/${id} - User: ${session.user.id} - Name: ${name}, ParentId: ${parentId}`);
 
     const item = await prisma.fileSystemItem.findUnique({ where: { id } });
     if (!item || item.ownerId !== session.user.id) {

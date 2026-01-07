@@ -6,6 +6,8 @@ export async function POST(req: Request) {
   try {
     const { email, password, name } = await req.json();
 
+    console.log(`[API] POST /auth/register - Registering user: ${email}`);
+
     if (!email || !password) {
       return NextResponse.json(
         { message: "Email and password are required" },

@@ -15,6 +15,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
 
   try {
     const { id } = await params;
+    console.log(`[API] GET /files/${id}/content - User: ${session.user.id}`);
     const item = await prisma.fileSystemItem.findUnique({
       where: { id }
     });
@@ -49,6 +50,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
 
   try {
     const { id } = await params;
+    console.log(`[API] POST /files/${id}/content - User: ${session.user.id}`);
     const item = await prisma.fileSystemItem.findUnique({
       where: { id }
     });
@@ -61,6 +63,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
     const buffer = Buffer.from(body);
     
     const storageKey = `${session.user.id}${item.path}`;
+    console.log(`[API] Saving to storageKey: ${storageKey}`);
     await storage.save(storageKey, buffer);
     
     // Update updatedAt?
