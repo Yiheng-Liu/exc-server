@@ -1,4 +1,9 @@
-# Exc Server
+# Excalidraw Cloud Server
+
+<div align="center">
+  <img src="/public/logo.png" alt="Exc Server Logo" width="200" />
+  <p><em>Your secure, personal whiteboard cloud storage.</em></p>
+</div>
 
 A self-hosted, cloud-enabled backend for Excalidraw, built with Next.js, Prisma, and Tailwind CSS.
 

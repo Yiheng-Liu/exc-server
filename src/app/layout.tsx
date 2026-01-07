@@ -19,10 +19,6 @@ export const metadata: Metadata = {
 
 import { Providers } from "@/components/Providers";
 
-// ... (keep existing imports if any, but replace_file_content replaces the block. 
-// I need to be careful. I will use a larger block or do it in two steps if needed, 
-// but here I can probably replace the body content or the whole file logic.)
-
 export default function RootLayout({
   children,
 }: Readonly<{
