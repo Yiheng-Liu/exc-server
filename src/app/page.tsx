@@ -1,65 +1,108 @@
-import Image from "next/image";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import { redirect } from "next/navigation";
+import Link from "next/link";
+import { Button } from "@/components/ui/Button";
+import { ArrowRight, Layout, Cloud, Shield } from "lucide-react";
 
-export default function Home() {
+export default async function Home() {
+  const session = await getServerSession(authOptions);
+
+  if (session) {
+    redirect("/dashboard");
+  }
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="flex min-h-screen flex-col bg-gradient-to-br from-indigo-50 via-white to-blue-50 text-gray-900 overflow-hidden relative">
+      
+      {/* Background Decor */}
+      <div className="absolute top-[-20%] left-[-10%] w-[500px] h-[500px] bg-blue-200/30 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute bottom-[-20%] right-[-10%] w-[500px] h-[500px] bg-indigo-200/30 rounded-full blur-[100px] pointer-events-none" />
+
+      {/* Header */}
+      <header className="flex items-center justify-between px-6 py-6 max-w-7xl mx-auto w-full z-10">
+        <div className="flex items-center gap-2 font-bold text-xl text-gray-800">
+           <Layout className="text-blue-600" /> Excalidraw Cloud
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+        <div className="flex gap-4">
+          <Link href="/login">
+            <Button variant="ghost">Log in</Button>
+          </Link>
+          <Link href="/register">
+            <Button>Sign up free</Button>
+          </Link>
+        </div>
+      </header>
+
+      {/* Hero */}
+      <main className="flex-1 flex flex-col items-center justify-center text-center px-4 py-20 z-10">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-sm font-medium mb-6 border border-blue-100">
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+          </span>
+          Next.js Edition Available Now
+        </div>
+        
+        <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-gray-900 mb-6 bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600">
+          Your Personal  
+          <span className="text-blue-600"> Whiteboard Cloud</span>
+        </h1>
+        
+        <p className="text-xl text-gray-600 max-w-2xl mb-10 leading-relaxed">
+          The best open-source whiteboard, supercharged with a personal file system, 
+          cloud storage, and folder organization. Built for speed and simplicity.
+        </p>
+
+        <div className="flex flex-col sm:flex-row gap-4 w-full justify-center">
+            <Link href="/register">
+                <Button size="lg" className="w-full sm:w-auto shadow-xl shadow-blue-500/20">
+                    Get Started for Free <ArrowRight size={18} />
+                </Button>
+            </Link>
+            <Link href="https://github.com/excalidraw/excalidraw" target="_blank">
+                <Button variant="secondary" size="lg" className="w-full sm:w-auto">
+                    View on GitHub
+                </Button>
+            </Link>
+        </div>
+
+        {/* Features Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-24 max-w-5xl text-left">
+            <FeatureCard 
+                icon={<Layout className="text-blue-600" />}
+                title="Folder Organization"
+                description="Stop losing your drawings. Organize them into deeply nested folders just like your computer."
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+            <FeatureCard 
+                icon={<Cloud className="text-indigo-600" />}
+                title="Cloud Sync"
+                description="Access your whiteboards from anywhere. Changes are auto-saved and synced across devices."
+            />
+             <FeatureCard 
+                icon={<Shield className="text-emerald-600" />}
+                title="Private & Secure"
+                description="Your data is yours. Authenticated access ensures only you can see and edit your files."
+            />
         </div>
+
       </main>
+      
+      <footer className="py-8 text-center text-gray-500 text-sm z-10">
+        &copy; {new Date().getFullYear()} Excalidraw Personal Cloud. MIT License.
+      </footer>
     </div>
   );
+}
+
+function FeatureCard({ icon, title, description }: { icon: React.ReactNode, title: string, description: string }) {
+    return (
+        <div className="p-6 rounded-2xl bg-white/60 backdrop-blur-sm border border-white/40 shadow-sm hover:shadow-md transition-all">
+            <div className="mb-4 p-3 bg-white rounded-xl inline-block shadow-sm border border-gray-100">
+                {icon}
+            </div>
+            <h3 className="text-lg font-bold text-gray-900 mb-2">{title}</h3>
+            <p className="text-gray-600 leading-relaxed">{description}</p>
+        </div>
+    );
 }
