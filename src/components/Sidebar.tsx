@@ -574,7 +574,7 @@ export function Sidebar({ className }: { className?: string }) {
 
   return (
     <div 
-        className={`flex flex-col h-full bg-gray-50/50 backdrop-blur-xl border-r border-gray-200/50 transition-all duration-75 ease-linear relative group/sidebar
+        className={`flex flex-col h-full bg-gray-50/50 backdrop-blur-xl border-r border-gray-200/50 transition-all duration-75 ease-linear relative group/sidebar z-50
         ${className}`}
         style={{ width: isCollapsed ? 60 : width }}
     >
@@ -672,7 +672,7 @@ export function Sidebar({ className }: { className?: string }) {
         {/* Context Menu */}
         {contextMenu && (
             <div 
-                className="fixed bg-white border border-gray-200 shadow-lg rounded-md py-1 z-50 text-sm min-w-[160px]"
+                className="fixed bg-white border border-gray-200 shadow-lg rounded-md py-1 z-[9999] text-sm min-w-[160px]"
                 style={{ top: contextMenu.y, left: contextMenu.x }}
                 onClick={(e) => e.stopPropagation()} 
             >
