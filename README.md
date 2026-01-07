@@ -78,6 +78,31 @@ The easiest way to get started is using Docker Compose. This bundles the applica
    ```
    Access the app at `http://localhost:3000`.
 
+### Option 3: Vercel (Cloud)
+
+1. **Push to GitHub**: Ensure your latest code is on GitHub.
+2. **Import Project**: In Vercel, import your repository.
+3. **Configure Environment Variables**: Add your database and S3 secrets:
+   - `DATABASE_URL` (Connection string to your online Postgres, e.g., Neon/Supabase)
+   - `STORAGE_PROVIDER=s3`
+   - `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY`
+   - `AWS_S3_REGION` / `AWS_S3_BUCKET` / `AWS_S3_ENDPOINT`
+   - `NEXTAUTH_SECRET` (Generate a random string)
+   - `NEXTAUTH_URL` (Your Vercel domain, e.g., `https://your-app.vercel.app`)
+
+4. **Build & Deploy**: Vercel will automatically run `npm install` (which triggers `prisma generate`) and then builds.
+5. **Database Migration**:
+   - Vercel does **not** automatically run migrations on deployment by default.
+   - **Option A (Recommended)**: Connect to your production DB locally and run:
+     ```bash
+     # Update .env to point to PROD database
+     npx prisma migrate deploy
+     ```
+   - **Option B (Build Command)**: In Vercel Project Settings > Build & Development Settings, change the Build Command to:
+     ```bash
+     npx prisma migrate deploy && next build
+     ```
+
 ## 🗺️ Roadmap & Todo
 
 - [ ] **Team Collaboration**: Real-time collaboration (WebSocket/P2P) for teams.
